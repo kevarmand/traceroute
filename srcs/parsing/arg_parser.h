@@ -3,7 +3,7 @@
 
 # include <stddef.h>
 
-typedef enum e_marg_error {
+typedef enum e_arg_error {
 	ARG_OK = 0,
 	ARG_ERR_ALLOC,
 	ARG_ERR_UNKNOWN_OPTION,
@@ -13,25 +13,25 @@ typedef enum e_marg_error {
 	ARG_ERR_INVALID_VALUE
 }	t_arg_error;
 
-typedef enum e_marg_id {
+typedef enum e_arg_id {
 	ARG_ID_END = 0
 }	t_arg_id;
 
-typedef struct s_marg_spec {
+typedef struct s_arg_spec {
 	int			id;
 	char		short_name;
 	const char	*long_name;
 	int			has_value;
 }	t_arg_spec;
 
-typedef struct s_marg_option {
+typedef struct s_arg_option {
 	int			id;
 	const char	*raw;
 	const char	*value;
 	int			argv_index;
 }	t_arg_option;
 
-typedef struct s_marg_result {
+typedef struct s_arg_result {
 	t_arg_option	*options;
 	const char		**args;
 	int				option_count;

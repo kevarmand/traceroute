@@ -12,12 +12,7 @@ NAME := ft_traceroute
 
 CC := cc
 CFLAGS := -Wall -Wextra -Werror
-CPPFLAGS := -Iincludes \
-			-Isrcs/parsing \
-			-Isrcs/debug \
-			-Isrcs/packet \
-			-Isrcs/probe \
-			-Isrcs/session
+CPPFLAGS := -Iincludes
 DEPFLAGS := -MMD -MP
 RM := rm -rf
 
@@ -50,14 +45,12 @@ SRCS :=	srcs/main.c \
 		srcs/parsing/args.c \
 		srcs/resolve/resolve.c \
 		srcs/socket/socket.c \
+		srcs/session/init.c \
+		srcs/session/send.c \
 		srcs/packet/parse_icmp.c \
 		srcs/packet/parse_ip.c \
 		srcs/packet/parse_udp.c \
 		srcs/packet/payload.c \
-		srcs/probe/probe_init.c \
-		srcs/probe/probe_match.c \
-		srcs/probe/probe_send.c \
-		srcs/probe/probe_timeout.c \
 		srcs/session/loop.c \
 		srcs/session/recv.c \
 		srcs/session/scheduler.c \
@@ -67,6 +60,7 @@ DEBUG_SRCS :=	$(SRCS) \
 				srcs/debug/debug_args.c \
 				srcs/debug/debug_resolve.c \
 				srcs/debug/debug_socket.c \
+				srcs/debug/debug_send.c \
 				srcs/debug/debug_packet.c \
 				srcs/debug/debug_probe.c \
 				srcs/debug/debug_recv.c

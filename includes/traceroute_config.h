@@ -15,31 +15,21 @@ typedef enum e_traceroute_args_error {
 	TRACEROUTE_ARGS_INVALID_RANGE
 }	t_traceroute_args_error;
 
+typedef enum e_traceroute_cli_error {
+	TRACEROUTE_CLI_OK = 0,
+	TRACEROUTE_CLI_UNKNOWN_OPTION,
+	TRACEROUTE_CLI_TOO_MANY_OPTIONS,
+	TRACEROUTE_CLI_TOO_MANY_ARGS,
+	TRACEROUTE_CLI_MISSING_VALUE,
+	TRACEROUTE_CLI_INVALID_VALUE,
+	TRACEROUTE_CLI_UNKNOWN_ERROR
+}	t_traceroute_cli_error;
+
 typedef enum e_traceroute_resolve_error {
 	TRACEROUTE_RESOLVE_OK = 0,
 	TRACEROUTE_RESOLVE_GAI,
 	TRACEROUTE_RESOLVE_NO_INET
 }	t_traceroute_resolve_error;
-
-typedef enum e_probe_state {
-	PROBE_FREE = 0,
-	PROBE_SENT,
-	PROBE_REPLY_PENDING,
-	PROBE_TIMEOUT_PENDING
-}	t_probe_state;
-
-typedef struct s_probe {
-	t_probe_state		state;
-	int					ttl;
-	int					probe_index;
-	unsigned short		port;
-	struct timeval		sent_at;
-	struct timeval		deadline;
-	struct sockaddr_in	reply_addr;
-	long				rtt_us;
-	unsigned char		icmp_type;
-	unsigned char		icmp_code;
-}	t_probe;
 
 typedef struct s_traceroute_cli {
 	const char	*program_name;
@@ -54,6 +44,7 @@ typedef struct s_traceroute_cli {
 	int			first_ttl;
 	int			base_port;
 	double		send_wait;
+	double		wait_time;
 	int			error;
 	int			cli_error;
 	const char	*bad_arg;
@@ -81,9 +72,9 @@ typedef struct s_traceroute_packet {
 
 typedef struct s_traceroute_config {
 	t_traceroute_cli		cli;
-	t_traceroute_target		target;
-	t_traceroute_socket		socket;
-	t_traceroute_packet		packet;
+	t_traceroute_target	target;
+	t_traceroute_socket	socket;
+	t_traceroute_packet	packet;
 }	t_traceroute_config;
 
 #endif

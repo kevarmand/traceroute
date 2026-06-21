@@ -66,3 +66,16 @@ const char	*traceroute_resolve_error_name(int error) {
 		return ("no IPv4 address found");
 	return ("unknown resolution error");
 }
+
+int	traceroute_prepare_target(t_traceroute_config *config, int *exit_status) {
+	int	error;
+
+	error = traceroute_resolve_target(config);
+	if (error != TRACEROUTE_RESOLVE_OK)
+	{
+		traceroute_print_error(config);
+		*exit_status = 1;
+		return (0);
+	}
+	return (1);
+}

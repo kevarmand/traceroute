@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-static void	mini_args_result_reset(t_arg_result *result) {
+static void	arg_parser_result_reset(t_arg_result *result) {
 	result->option_count = 0;
 	result->arg_count = 0;
 	result->error = ARG_OK;
@@ -15,7 +15,7 @@ int	arg_parser_result_init(t_arg_result *result, int argc) {
 	result->args = NULL;
 	result->option_capacity = argc;
 	result->arg_capacity = argc;
-	mini_args_result_reset(result);
+	arg_parser_result_reset(result);
 	result->options = malloc(sizeof(*result->options) * argc);
 	result->args = malloc(sizeof(*result->args) * argc);
 	if (!result->options || !result->args)
@@ -177,7 +177,7 @@ int	arg_parser_parse(int argc, char **argv, const t_arg_spec *specs,
 
 	i = 1;
 	end_options = 0;
-	mini_args_result_reset(result);
+	arg_parser_result_reset(result);
 	while (i < argc && result->error == ARG_OK)
 	{
 		if (end_options || argv[i][0] != '-' || argv[i][1] == '\0')
