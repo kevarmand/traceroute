@@ -39,8 +39,21 @@ void	debug_print_recv(const t_traceroute_config *config,
 	printf("  from         = %s\n", inet_ntoa(reply->from.sin_addr));
 	printf("  type         = %u\n", (unsigned int)reply->icmp_type);
 	printf("  code         = %u\n", (unsigned int)reply->icmp_code);
-	printf("  udp_port     = %u\n", (unsigned int)reply->port);
+	printf("  original_dst = %s\n", inet_ntoa(reply->original_dst));
+	printf("  udp_src_port = %u\n", (unsigned int)reply->source_port);
+	printf("  udp_dst_port = %u\n", (unsigned int)reply->port);
 	print_matched_probe(probe);
+}
+
+void	debug_print_recv_ignored(const t_traceroute_config *config,
+		const struct sockaddr_in *from, ssize_t length,
+		t_icmp_parse_status status) {
+	printf("[debug][recv][ignored]\n");
+	printf("  target       = %s\n", config->target.ip);
+	printf("  from         = %s\n", inet_ntoa(from->sin_addr));
+	printf("  length       = %ld\n", (long)length);
+	printf("  reason       = %s\n",
+		traceroute_icmp_parse_status_name(status));
 }
 
 #endif

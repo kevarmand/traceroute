@@ -1,3 +1,4 @@
+
 #ifndef SESSION_H
 # define SESSION_H
 
@@ -33,8 +34,8 @@ typedef struct s_scheduler {
 	unsigned short	next_port;
 	struct timeval	next_send_at;
 	int				in_flight_count;
-	int				destination_found;
-	int				destination_ttl;
+	int				stop_found;
+	int				stop_ttl;
 }	t_scheduler;
 
 typedef struct s_output_state {
@@ -69,3 +70,4 @@ int		traceroute_session_wait(t_traceroute_config *config,
 			t_session *session, int *exit_status);
 
 #endif
+

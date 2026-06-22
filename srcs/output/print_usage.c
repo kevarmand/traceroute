@@ -1,3 +1,4 @@
+
 #include "ft_traceroute.h"
 
 void	traceroute_print_usage(const char *program_name) {
@@ -5,7 +6,7 @@ void	traceroute_print_usage(const char *program_name) {
 	printf("Usage:\n");
 	printf("  ft_traceroute [ -n ] [ -f first_ttl ] [ -m max_ttl ] ");
 	printf("[ -N squeries ] [ -p port ] [ -q nqueries ] ");
-	printf("[ -s src_addr ] [ -z sendwait ] [ -w waittime ] host\n");
+	printf("[ -z sendwait ] [ -w waittime ] host\n");
 	printf("Options:\n");
 	printf("  -f first_ttl  --first=first_ttl\n");
 	printf("                              Start from the first_ttl hop");
@@ -23,8 +24,6 @@ void	traceroute_print_usage(const char *program_name) {
 	printf("  -q nqueries  --queries=nqueries\n");
 	printf("                              Set the number of probes per each hop.");
 	printf(" Default is 3\n");
-	printf("  -s src_addr  --source=src_addr\n");
-	printf("                              Use source src_addr for outgoing packets\n");
 	printf("  -z sendwait  --sendwait=sendwait\n");
 	printf("                              Minimal time interval between probes.");
 	printf(" Default is 0\n");
@@ -36,3 +35,4 @@ void	traceroute_print_usage(const char *program_name) {
 	printf("Arguments:\n");
 	printf("+     host          The host to traceroute to\n");
 }
+

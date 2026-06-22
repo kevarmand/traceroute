@@ -1,3 +1,5 @@
+
+
 .DEFAULT_GOAL := all
 
 # **************************************************************************** #
@@ -39,21 +41,22 @@ SRCS :=	srcs/main.c \
 		srcs/output/error.c \
 		srcs/output/print_header.c \
 		srcs/output/print_usage.c \
-		srcs/output/print_hop.c \
-		srcs/output/print_reply.c \
 		srcs/parsing/arg_parser.c \
 		srcs/parsing/args.c \
+		srcs/parsing/args_defaults.c \
+		srcs/parsing/args_error.c \
+		srcs/parsing/args_options.c \
+		srcs/parsing/args_validate.c \
+		srcs/parsing/args_values.c \
 		srcs/resolve/resolve.c \
 		srcs/socket/socket.c \
 		srcs/session/init.c \
 		srcs/session/send.c \
 		srcs/packet/parse_icmp.c \
-		srcs/packet/parse_ip.c \
-		srcs/packet/parse_udp.c \
-		srcs/packet/payload.c \
 		srcs/session/loop.c \
 		srcs/session/recv.c \
-		srcs/session/scheduler.c \
+		srcs/session/expire.c \
+		srcs/session/print.c \
 		srcs/session/select.c
 
 DEBUG_SRCS :=	$(SRCS) \
@@ -143,3 +146,4 @@ net-nat:
 -include $(DEBUG_DEPS)
 
 .PHONY: all debug clean fclean re net-check net-bridge net-nat
+

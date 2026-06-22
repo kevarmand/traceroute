@@ -1,3 +1,4 @@
+
 #ifndef TRACEROUTE_CONFIG_H
 # define TRACEROUTE_CONFIG_H
 
@@ -34,10 +35,8 @@ typedef enum e_traceroute_resolve_error {
 typedef struct s_traceroute_cli {
 	const char	*program_name;
 	const char	*target;
-	const char	*source;
 	int			help;
 	int			no_dns;
-	int			has_source;
 	int			sim_queries;
 	int			probes_per_hop;
 	int			max_hops;
@@ -45,6 +44,8 @@ typedef struct s_traceroute_cli {
 	int			base_port;
 	double		send_wait;
 	double		wait_time;
+	double		wait_here;
+	double		wait_near;
 	int			error;
 	int			cli_error;
 	const char	*bad_arg;
@@ -78,3 +79,4 @@ typedef struct s_traceroute_config {
 }	t_traceroute_config;
 
 #endif
+

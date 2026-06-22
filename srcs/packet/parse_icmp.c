@@ -1,38 +1,78 @@
 #include "packet.h"
 
-static int	get_ip_header_length(const unsigned char *buffer,
-		ssize_t length) {
-	const struct iphdr	*ip;
-	int						header_length;
-
-	if (length < (ssize_t)sizeof(struct iphdr))
-		return (-1);
-	ip = (const struct iphdr *)buffer;
-	header_length = ip->ihl * 4;
-	if (header_length < (int)sizeof(struct iphdr))
-		return (-1);
-	if (length < header_length)
-		return (-1);
-	return (header_length);
+const char	*traceroute_icmp_parse_status_name(
+		t_icmp_parse_status status) {
+	if (status == ICMP_PARSE_OK)
+		return ("ok");
+	if (status == ICMP_PARSE_SHORT_OUTER_IP)
+		return ("short outer ip");
+	if (status == ICMP_PARSE_BAD_OUTER_IP)
+		return ("bad outer ip");
+	if (status == ICMP_PARSE_SHORT_ICMP)
+		return ("short icmp");
+	if (status == ICMP_PARSE_IGNORED_TYPE)
+		return ("ignored icmp type");
+	if (status == ICMP_PARSE_SHORT_INNER_IP)
+		return ("short inner ip");
+	if (status == ICMP_PARSE_BAD_INNER_IP)
+		return ("bad inner ip");
+	if (status == ICMP_PARSE_NOT_UDP)
+		return ("inner protocol is not udp");
+	if (status == ICMP_PARSE_SHORT_UDP)
+		return ("short udp");
+	return ("unknown");
 }
 
-static int	parse_original_udp_port(const unsigned char *buffer,
-		ssize_t length, unsigned short *port) {
+static t_icmp_parse_status	get_outer_ip_header_length(
+		const unsigned char *buffer, ssize_t length, int *header_length) {
+	const struct iphdr	*ip;
+
+	if (length < (ssize_t)sizeof(struct iphdr))
+		return (ICMP_PARSE_SHORT_OUTER_IP);
+	ip = (const struct iphdr *)buffer;
+	*header_length = ip->ihl * 4;
+	if (ip->version != 4 || *header_length < (int)sizeof(struct iphdr))
+		return (ICMP_PARSE_BAD_OUTER_IP);
+	if (length < *header_length)
+		return (ICMP_PARSE_SHORT_OUTER_IP);
+	return (ICMP_PARSE_OK);
+}
+
+static t_icmp_parse_status	get_inner_ip_header_length(
+		const unsigned char *buffer, ssize_t length, int *header_length) {
+	const struct iphdr	*ip;
+
+	if (length < (ssize_t)sizeof(struct iphdr))
+		return (ICMP_PARSE_SHORT_INNER_IP);
+	ip = (const struct iphdr *)buffer;
+	*header_length = ip->ihl * 4;
+	if (ip->version != 4 || *header_length < (int)sizeof(struct iphdr))
+		return (ICMP_PARSE_BAD_INNER_IP);
+	if (length < *header_length)
+		return (ICMP_PARSE_SHORT_INNER_IP);
+	return (ICMP_PARSE_OK);
+}
+
+static t_icmp_parse_status	parse_original_udp(
+		const unsigned char *buffer, ssize_t length, t_icmp_reply *reply) {
 	const struct iphdr	*ip;
 	const struct udphdr	*udp;
 	int						header_length;
+	t_icmp_parse_status	status;
 
-	header_length = get_ip_header_length(buffer, length);
-	if (header_length < 0)
-		return (0);
+	status = get_inner_ip_header_length(buffer, length, &header_length);
+	if (status != ICMP_PARSE_OK)
+		return (status);
 	ip = (const struct iphdr *)buffer;
 	if (ip->protocol != IPPROTO_UDP)
-		return (0);
+		return (ICMP_PARSE_NOT_UDP);
 	if (length < header_length + (ssize_t)sizeof(struct udphdr))
-		return (0);
+		return (ICMP_PARSE_SHORT_UDP);
 	udp = (const struct udphdr *)(buffer + header_length);
-	*port = ntohs(udp->dest);
-	return (1);
+	reply->original_dst.s_addr = ip->daddr;
+	reply->source_port = ntohs(udp->source);
+	reply->port = ntohs(udp->dest);
+	return (ICMP_PARSE_OK);
 }
 
 static int	is_traceroute_icmp(unsigned char type) {
@@ -43,27 +83,27 @@ static int	is_traceroute_icmp(unsigned char type) {
 	return (0);
 }
 
-int	traceroute_parse_icmp_reply(const unsigned char *buffer,
-		ssize_t length, const struct sockaddr_in *from, t_icmp_reply *reply) {
+t_icmp_parse_status	traceroute_parse_icmp_reply(
+		const unsigned char *buffer, ssize_t length,
+		const struct sockaddr_in *from, t_icmp_reply *reply) {
 	const struct icmphdr	*icmp;
 	const unsigned char	*original;
 	ssize_t				remaining;
 	int					outer_ihl;
+	t_icmp_parse_status	status;
 
-	outer_ihl = get_ip_header_length(buffer, length);
-	if (outer_ihl < 0)
-		return (0);
+	status = get_outer_ip_header_length(buffer, length, &outer_ihl);
+	if (status != ICMP_PARSE_OK)
+		return (status);
 	if (length < outer_ihl + (ssize_t)sizeof(struct icmphdr))
-		return (0);
+		return (ICMP_PARSE_SHORT_ICMP);
 	icmp = (const struct icmphdr *)(buffer + outer_ihl);
-	if (!is_traceroute_icmp(icmp->type))
-		return (0);
-	original = buffer + outer_ihl + sizeof(struct icmphdr);
-	remaining = length - outer_ihl - sizeof(struct icmphdr);
-	if (!parse_original_udp_port(original, remaining, &reply->port))
-		return (0);
 	reply->from = *from;
 	reply->icmp_type = icmp->type;
 	reply->icmp_code = icmp->code;
-	return (1);
+	if (!is_traceroute_icmp(icmp->type))
+		return (ICMP_PARSE_IGNORED_TYPE);
+	original = buffer + outer_ihl + sizeof(struct icmphdr);
+	remaining = length - outer_ihl - sizeof(struct icmphdr);
+	return (parse_original_udp(original, remaining, reply));
 }

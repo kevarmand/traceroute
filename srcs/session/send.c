@@ -1,3 +1,4 @@
+
 #include "session.h"
 #include "../debug/debug.h"
 
@@ -37,8 +38,8 @@ static void	add_seconds_to_timeval(struct timeval *dst,
 
 static int	send_is_allowed_now(const t_traceroute_config *config,
 		const t_session *session, const struct timeval *now) {
-	if (session->scheduler.destination_found
-		&& session->scheduler.send_ttl > session->scheduler.destination_ttl)
+	if (session->scheduler.stop_found
+		&& session->scheduler.send_ttl > session->scheduler.stop_ttl)
 		return (0);
 	if (session->scheduler.send_ttl > config->cli.max_hops)
 		return (0);

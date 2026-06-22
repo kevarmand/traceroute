@@ -1,3 +1,4 @@
+
 #include "session.h"
 
 static void	init_session_empty(t_session *session) {
@@ -72,8 +73,8 @@ static void	init_scheduler(const t_traceroute_config *config,
 	session->scheduler.next_send_at.tv_sec = 0;
 	session->scheduler.next_send_at.tv_usec = 0;
 	session->scheduler.in_flight_count = 0;
-	session->scheduler.destination_found = 0;
-	session->scheduler.destination_ttl = 0;
+	session->scheduler.stop_found = 0;
+	session->scheduler.stop_ttl = 0;
 }
 
 static void	init_output(t_session *session) {
@@ -111,3 +112,4 @@ void	traceroute_cleanup_session(t_session *session) {
 	session->probe_capacity = 0;
 	session->total_probes = 0;
 }
+

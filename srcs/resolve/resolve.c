@@ -1,3 +1,4 @@
+
 #include "ft_traceroute.h"
 
 static void	clear_addrinfo(struct addrinfo *hints) {
@@ -44,6 +45,8 @@ int	traceroute_resolve_target(t_traceroute_config *config) {
 	}
 	if (!result || result->ai_family != AF_INET)
 	{
+		if (result)
+			freeaddrinfo(result);
 		config->target.error = TRACEROUTE_RESOLVE_NO_INET;
 		return (config->target.error);
 	}

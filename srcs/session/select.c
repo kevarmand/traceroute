@@ -1,3 +1,4 @@
+
 #include "session.h"
 
 static int	time_is_before(const struct timeval *left,
@@ -36,8 +37,8 @@ static void	time_subtract(struct timeval *dst, const struct timeval *target,
 
 static int	has_more_to_send(const t_traceroute_config *config,
 		const t_session *session) {
-	if (session->scheduler.destination_found
-		&& session->scheduler.send_ttl > session->scheduler.destination_ttl)
+	if (session->scheduler.stop_found
+		&& session->scheduler.send_ttl > session->scheduler.stop_ttl)
 		return (0);
 	if (session->scheduler.send_ttl > config->cli.max_hops)
 		return (0);
