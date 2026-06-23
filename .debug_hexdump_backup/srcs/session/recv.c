@@ -203,13 +203,13 @@ static int	read_one_reply(t_traceroute_config *config,
 	status = traceroute_parse_icmp_reply(buffer, length, &from, &reply);
 	if (status != ICMP_PARSE_OK)
 	{
-		DEBUG_RECV_IGNORED(config, &from, buffer, length, status);
+		DEBUG_RECV_IGNORED(config, &from, length, status);
 		return (1);
 	}
 	if (!reply_matches_target(config, &reply))
 		return (1);
 	probe = find_sent_probe_by_port(session, reply.port);
-	DEBUG_RECV(config, &reply, probe, buffer, length);
+	DEBUG_RECV(config, &reply, probe);
 	if (!probe)
 		return (1);
 	commit_reply(config, session, probe, &reply);

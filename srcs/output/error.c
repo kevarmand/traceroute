@@ -48,7 +48,7 @@ void	traceroute_print_error(const t_traceroute_config *config) {
 	}
 	if (config->cli.error == TRACEROUTE_ARGS_MISSING_TARGET)
 	{
-		traceroute_print_usage(config->cli.program_name);
+		printf("Specify \"host\" missing argument.\n");
 		return;
 	}
 	if (config->cli.error != TRACEROUTE_ARGS_OK)
